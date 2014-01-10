@@ -54,12 +54,12 @@ class member(models.Model):
 	age             =	models.PositiveIntegerField(blank = True, null = True,help_text ="Generated from date of birth")
      	sex             =	models.CharField('Gender', choices =(("Male","Male"),("Female","Female")),max_length = 7)
      	date_Of_birth   =	models.DateField(blank = True, null = True,help_text = "YYYY-MM-DD")
-     	dob_status      =       models.CharField(max_length= 10,choices=(("This Month","This Month"),("Passed","Passed"),("Not Due","Not Due")))
-	auxilliary	=	models.ManyToManyField(Auxillary,help_text ="Select Member's Auxilliary/ enter new if not in the list",blank=True, null=True)
-	department      =       models.ForeignKey (Department,default="None",verbose_name ="Department",help_text="Youth/ Mens/ Women/ Children",blank=True, null=True)
+     	dob_status      =       models.CharField(max_length= 10,choices=(("This Month","This Month"),("Next Month","Next Month"),("Last Month & Beyond","Last Month & Beyond"),("Not Due","Not Due")))
+	auxilliary	=	models.ManyToManyField(Auxillary,default= "None",help_text ="Select Member's Auxilliary/ enter new if not in the list",blank=True, null=True)
+	department      =       models.ForeignKey(Department,default="None",verbose_name ="Department",help_text="Youth/ Mens/ Women/ Children",blank=True, null=True)
 	status          =       models.CharField(max_length= 10, default = "Active",choices =(("Active","Active"),("Passive","Passive")))
 	house_location  =       models.TextField(blank=True, null=True)
-        short_notes     =       models.TextField(blank=True, null=True, help_text="This designate any additional info on the student")
+        short_notes     =       models.TextField(blank=True, null=True, help_text="This designate any additional info on the member")
 	date_created	= 	models.DateTimeField (auto_now_add=True, blank =True, null = True)
      	date_updated    = 	models.DateTimeField (auto_now=True,blank =True, null = True)
 	
@@ -104,16 +104,19 @@ class member(models.Model):
                    if diff ==0:
                            self.dob_status= "This Month"
                            return self.dob_status
+                   elif diff == 1:
+                         self.dob_status ="Next Month"
+                         return self.dob_status
                    elif diff > 0:
                            self.dob_status = "Not Due"
                            return self.dob_status
                    elif diff <0:
-                           self.dob_status = "Passed"
+                           self.dob_status = "lAST Month & Beyond"
                            return self.dob_status
         
                
         def save(self,*args,**kwargs):
-		
+		self.birthday()
                 self.Age()
     		super(member,self).save(*args, **kwargs)
 		return True     
@@ -133,7 +136,7 @@ class department_Admin(admin.ModelAdmin):
       ordering      = ('-date_added',)
       date_hierarchy    = 'date_added'
       readonly_fields =('number',)
-      inlines             = [memberInline]
+      #inlines             = [memberInline]
 
 
 
@@ -143,7 +146,7 @@ class member_Admin(admin.ModelAdmin):
 			'Full_name',
 			'sex','phone_number',
 			'department',
-			'date_Of_birth','birthday','status'
+			'date_Of_birth','dob_status','status'
 			)
       search_fields = ('surname','other_name','phone_number')
       list_filter = ('sex','department','auxilliary','dob_status')

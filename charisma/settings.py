@@ -77,6 +77,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+     os.path.join(SITE_ROOT, 'assets'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -85,8 +86,8 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -132,7 +133,11 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.admin',
     'memberz',
+    'visitor',
+    'attendance',
     'django_evolution',
+    'model_report',
+    
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
